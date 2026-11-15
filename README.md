@@ -4,7 +4,7 @@ A planned mobile-friendly running-cost calculator for personal use and sharing w
 
 ## Project status
 
-Planning and repository setup. The web calculator has not been built or deployed yet.
+The first web interface is built. It supports editable vehicle comparisons, local saving and a transparent cost breakdown. Automatic Gaspy prices still require a supported data feed.
 
 ## First version
 
@@ -15,6 +15,10 @@ Planning and repository setup. The web calculator has not been built or deployed
 - Preserve the original spreadsheet's home/public charging split and charging efficiency inputs.
 - Allow manual prices and consumption overrides.
 - Save comparisons on each person's device.
+
+## Run locally
+
+Use a local static server from this folder, or run `npm run build` and serve the generated `dist` directory. The calculation checks run with `npm test`.
 
 ## Fuel prices
 

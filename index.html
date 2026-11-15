@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en-NZ">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#12271f">
+  <meta name="description" content="Compare petrol, diesel, hybrid, plug-in hybrid and electric car running costs in New Zealand.">
+  <title>NZ Car Cost Calculator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="NZ Car Cost Calculator home">
+      <span class="brand-mark" aria-hidden="true">↗</span>
+      <span>Roadwise</span>
+    </a>
+    <a class="header-link" href="https://www.gaspy.nz/stats.html" target="_blank" rel="noreferrer">View Gaspy prices <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">New Zealand car running costs</p>
+        <h1>See what each car really costs to drive.</h1>
+        <p class="hero-copy">Compare fuel, electricity and road user charges using your own driving and prices.</p>
+      </div>
+      <div class="hero-metric" aria-live="polite">
+        <span>Best annual estimate</span>
+        <strong id="best-annual">—</strong>
+        <small id="best-label">Add a vehicle to compare</small>
+      </div>
+    </section>
+
+    <section class="control-grid" aria-label="Calculator assumptions">
+      <article class="panel driving-panel">
+        <div class="section-heading">
+          <div>
+            <p class="step">01</p>
+            <h2>Your driving</h2>
+          </div>
+          <button class="text-button" id="reset-all" type="button">Reset calculator</button>
+        </div>
+        <div class="field-row">
+          <label class="field">
+            <span>Distance each year</span>
+            <span class="input-with-unit"><input id="annual-km" type="number" min="0" step="500" value="15000"><b>km</b></span>
+          </label>
+          <label class="field">
+            <span>Trip distance</span>
+            <span class="input-with-unit"><input id="trip-km" type="number" min="0" step="10" value="220"><b>km</b></span>
+          </label>
+        </div>
+      </article>
+
+      <article class="panel prices-panel">
+        <div class="section-heading">
+          <div>
+            <p class="step">02</p>
+            <h2>Energy prices</h2>
+          </div>
+          <span class="status-badge">Manual prices</span>
+        </div>
+        <p class="panel-note">Enter the price you actually pay. Automatic Gaspy averages are planned once supported access is confirmed.</p>
+        <div class="price-grid">
+          <label class="mini-field"><span>Petrol 91</span><span><b>$</b><input data-price="petrol91" type="number" min="0" step="0.01" value="2.80"></span></label>
+          <label class="mini-field"><span>Petrol 95</span><span><b>$</b><input data-price="petrol95" type="number" min="0" step="0.01" value="3.00"></span></label>
+          <label class="mini-field"><span>Petrol 98</span><span><b>$</b><input data-price="petrol98" type="number" min="0" step="0.01" value="3.10"></span></label>
+          <label class="mini-field"><span>Diesel</span><span><b>$</b><input data-price="diesel" type="number" min="0" step="0.01" value="2.00"></span></label>
+          <label class="mini-field"><span>Home power</span><span><b>$</b><input data-price="homeElectric" type="number" min="0" step="0.01" value="0.30"></span></label>
+          <label class="mini-field"><span>Public charging</span><span><b>$</b><input data-price="publicElectric" type="number" min="0" step="0.01" value="0.82"></span></label>
+        </div>
+        <div class="source-row">
+          <span>Fuel prices are examples until edited</span>
+          <a href="https://www.gaspy.nz/stats.html" target="_blank" rel="noreferrer">Check Gaspy</a>
+        </div>
+      </article>
+
+      <details class="panel advanced-panel">
+        <summary><span><span class="step">03</span><b>Charging and RUC assumptions</b></span><span class="summary-action">Adjust</span></summary>
+        <div class="advanced-grid">
+          <label class="field"><span>EV charging at home</span><span class="input-with-unit"><input id="home-share" type="number" min="0" max="100" step="5" value="80"><b>%</b></span></label>
+          <label class="field"><span>Charging efficiency</span><span class="input-with-unit"><input id="charge-efficiency" type="number" min="1" max="100" step="1" value="95"><b>%</b></span></label>
+          <label class="field"><span>Diesel &amp; EV RUC</span><span class="input-with-unit"><b>$</b><input id="standard-ruc" type="number" min="0" step="1" value="76"><b>/1,000 km</b></span></label>
+          <label class="field"><span>Petrol PHEV RUC</span><span class="input-with-unit"><b>$</b><input id="phev-ruc" type="number" min="0" step="1" value="38"><b>/1,000 km</b></span></label>
+        </div>
+        <p class="panel-note">RUC defaults reflect the usual light-vehicle rates listed by NZTA. Purchase transaction fees are not included.</p>
+      </details>
+    </section>
+
+    <section class="comparison-section">
+      <div class="section-heading comparison-heading">
+        <div>
+          <p class="step">04</p>
+          <h2>Compare vehicles</h2>
+          <p>Edit the examples or add your own car. Results update instantly.</p>
+        </div>
+        <button class="primary-button" id="add-vehicle" type="button"><span aria-hidden="true">＋</span> Add vehicle</button>
+      </div>
+
+      <div class="results-summary" id="results-summary" aria-live="polite"></div>
+      <div class="vehicle-grid" id="vehicle-grid"></div>
+    </section>
+
+    <section class="method-section">
+      <div>
+        <p class="eyebrow">How the estimate works</p>
+        <h2>A fair comparison, with the important costs visible.</h2>
+      </div>
+      <div class="method-list">
+        <p><span>Fuel</span>Consumption × pump price</p>
+        <p><span>Electricity</span>Consumption × blended charging price ÷ efficiency</p>
+        <p><span>Road use</span>Applicable RUC rate × distance</p>
+      </div>
+      <p class="method-note">This is an estimate of energy and RUC costs. It excludes servicing, tyres, insurance, registration, finance and depreciation.</p>
+    </section>
+  </main>
+
+  <template id="vehicle-template">
+    <article class="vehicle-card">
+      <div class="vehicle-card-head">
+        <span class="vehicle-icon" aria-hidden="true"></span>
+        <div>
+          <input class="vehicle-name" type="text" aria-label="Vehicle name">
+          <select class="vehicle-type" aria-label="Powertrain">
+            <option value="petrol">Petrol</option>
+            <option value="diesel">Diesel</option>
+            <option value="hybrid">Petrol hybrid</option>
+            <option value="phev">Plug-in hybrid</option>
+            <option value="ev">Electric</option>
+          </select>
+        </div>
+        <button class="icon-button remove-vehicle" type="button" aria-label="Remove vehicle">×</button>
+      </div>
+
+      <div class="vehicle-inputs"></div>
+
+      <div class="cost-breakdown">
+        <div class="bar" aria-hidden="true"><span class="energy-bar"></span><span class="ruc-bar"></span></div>
+        <p><span><i class="dot energy"></i>Energy</span><b class="energy-cost">—</b></p>
+        <p><span><i class="dot ruc"></i>RUC</span><b class="ruc-cost">—</b></p>
+      </div>
+
+      <div class="vehicle-results">
+        <p><span>Cost per 100 km</span><strong class="per-100">—</strong></p>
+        <p><span>Annual estimate</span><strong class="annual-cost">—</strong></p>
+        <p><span>Trip estimate</span><strong class="trip-cost">—</strong></p>
+      </div>
+      <p class="vehicle-footnote"></p>
+    </article>
+  </template>
+
+  <footer>
+    <p>Roadwise is a personal NZ running-cost calculator.</p>
+    <p><a href="https://www.nzta.govt.nz/vehicles/road-user-charges/about-ruc" target="_blank" rel="noreferrer">NZTA RUC information</a> · <a href="https://www.gaspy.nz/stats.html" target="_blank" rel="noreferrer">Gaspy fuel statistics</a></p>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
