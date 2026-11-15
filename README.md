@@ -42,4 +42,6 @@ Verified vehicle presets, shareable comparison links, and an optional ownership-
 
 ## Repository and hosting
 
-Private repository: [markshawkiwi/nz-car-cost-calculator](https://github.com/markshawkiwi/nz-car-cost-calculator). Website hosting and public access will be configured separately. Friends should be able to use the eventual calculator without GitHub accounts.
+Public repository: [markshawkiwi/nz-car-cost-calculator](https://github.com/markshawkiwi/nz-car-cost-calculator).
+
+Live website: [markshawkiwi.github.io/nz-car-cost-calculator](https://markshawkiwi.github.io/nz-car-cost-calculator/). GitHub Pages publishes the root of the `main` branch and updates after new commits.
