@@ -50,10 +50,17 @@ input[type=number] { appearance: textfield; }
 input::-webkit-inner-spin-button { appearance: none; }
 .status-badge { padding: 7px 10px; border-radius: 99px; color: #4f634d; background: #e9f1d3; font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
 .panel-note { margin: 16px 0 20px; color: var(--muted); font-size: .78rem; line-height: 1.55; }
-.price-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
+.price-groups { display: grid; grid-template-columns: 1fr 2fr; gap: 16px 9px; }
+.price-group { min-width: 0; }
+.price-group:first-child { grid-column: 1 / -1; }
+.price-group h3 { margin: 0 0 8px; color: var(--ink); font-size: .75rem; font-weight: 780; }
+.price-grid { display: grid; grid-template-columns: 1fr; gap: 9px; }
+.price-grid.three-prices { grid-template-columns: repeat(3, 1fr); }
+.price-grid.two-prices { grid-template-columns: repeat(2, 1fr); }
 .mini-field { display: grid; gap: 6px; color: var(--muted); font-size: .67rem; font-weight: 720; }
-.mini-field > span:last-child { padding: 10px; display: flex; gap: 3px; border: 1px solid var(--line); border-radius: 9px; background: #fff; }
+.mini-field > span:last-child { padding: 10px; display: flex; align-items: center; gap: 4px; border: 1px solid var(--line); border-radius: 9px; background: #fff; }
 .mini-field input { width: 100%; min-width: 0; border: 0; outline: 0; color: var(--ink); font-weight: 750; background: transparent; }
+.mini-field b { white-space: nowrap; color: var(--muted); font-size: .65rem; font-weight: 650; }
 .source-row { margin-top: 18px; padding-top: 13px; display: flex; justify-content: space-between; border-top: 1px solid #e9e9e1; color: var(--muted); font-size: .67rem; }
 .source-button { padding: 0; border: 0; color: var(--green); background: transparent; cursor: pointer; font-size: inherit; font-weight: 750; text-decoration: underline; text-underline-offset: 3px; }
 .source-button:disabled { color: var(--muted); cursor: wait; }
@@ -143,6 +150,10 @@ footer a { text-underline-offset: 3px; }
   .control-grid, .comparison-section, .method-section, footer { margin-left: 10px; margin-right: 10px; }
   .panel { padding: 22px; }
   .field-row, .price-grid, .advanced-grid, .vehicle-grid, .results-summary, .method-section { grid-template-columns: 1fr; }
+  .price-groups { grid-template-columns: 1fr; }
+  .price-group:first-child { grid-column: auto; }
+  .price-grid.three-prices { grid-template-columns: repeat(3, 1fr); }
+  .price-grid.two-prices { grid-template-columns: repeat(2, 1fr); }
   .advanced-grid { padding: 0 20px 20px; }
   .comparison-section { padding-top: 65px; }
   .comparison-heading { align-items: flex-start; flex-direction: column; }

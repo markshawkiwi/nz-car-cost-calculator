@@ -61,13 +61,28 @@
           <span class="status-badge" id="fuel-status">Loading Gaspy</span>
         </div>
         <p class="panel-note">NZ average fuel prices load from Gaspy. Edit any price to use a manual override.</p>
-        <div class="price-grid">
-          <label class="mini-field"><span>Petrol 91</span><span><b>$</b><input data-price="petrol91" type="number" min="0" step="0.001" value="2.80"></span></label>
-          <label class="mini-field"><span>Petrol 95</span><span><b>$</b><input data-price="petrol95" type="number" min="0" step="0.001" value="3.00"></span></label>
-          <label class="mini-field"><span>Petrol 98</span><span><b>$</b><input data-price="petrol98" type="number" min="0" step="0.001" value="3.10"></span></label>
-          <label class="mini-field"><span>Diesel</span><span><b>$</b><input data-price="diesel" type="number" min="0" step="0.001" value="2.00"></span></label>
-          <label class="mini-field"><span>Home power</span><span><b>$</b><input data-price="homeElectric" type="number" min="0" step="0.01" value="0.30"></span></label>
-          <label class="mini-field"><span>Public charging</span><span><b>$</b><input data-price="publicElectric" type="number" min="0" step="0.01" value="0.82"></span></label>
+        <div class="price-groups">
+          <section class="price-group petrol-prices" aria-labelledby="petrol-prices-heading">
+            <h3 id="petrol-prices-heading">Petrol</h3>
+            <div class="price-grid three-prices">
+              <label class="mini-field"><span>91</span><span><b>$</b><input aria-label="Petrol 91 price per litre" data-price="petrol91" type="number" min="0" step="0.001" value="2.80"><b>/L</b></span></label>
+              <label class="mini-field"><span>95</span><span><b>$</b><input aria-label="Petrol 95 price per litre" data-price="petrol95" type="number" min="0" step="0.001" value="3.00"><b>/L</b></span></label>
+              <label class="mini-field"><span>98</span><span><b>$</b><input aria-label="Petrol 98 price per litre" data-price="petrol98" type="number" min="0" step="0.001" value="3.10"><b>/L</b></span></label>
+            </div>
+          </section>
+          <section class="price-group" aria-labelledby="diesel-prices-heading">
+            <h3 id="diesel-prices-heading">Diesel</h3>
+            <div class="price-grid">
+              <label class="mini-field"><span>Pump price</span><span><b>$</b><input aria-label="Diesel price per litre" data-price="diesel" type="number" min="0" step="0.001" value="2.00"><b>/L</b></span></label>
+            </div>
+          </section>
+          <section class="price-group" aria-labelledby="electricity-prices-heading">
+            <h3 id="electricity-prices-heading">Electricity</h3>
+            <div class="price-grid two-prices">
+              <label class="mini-field"><span>Home charging</span><span><b>$</b><input aria-label="Home electricity price per kilowatt-hour" data-price="homeElectric" type="number" min="0" step="0.01" value="0.30"><b>/kWh</b></span></label>
+              <label class="mini-field"><span>Public charging</span><span><b>$</b><input aria-label="Public charging price per kilowatt-hour" data-price="publicElectric" type="number" min="0" step="0.01" value="0.82"><b>/kWh</b></span></label>
+            </div>
+          </section>
         </div>
         <div class="source-row">
           <span id="fuel-source-detail">Connecting to Gaspy…</span>
