@@ -178,7 +178,10 @@ function syncInputs() {
   $('#charge-efficiency').value = state.chargeEfficiency;
   $('#standard-ruc').value = state.standardRuc;
   $('#phev-ruc').value = state.phevRuc;
-  $$('[data-price]').forEach(inputEl => inputEl.value = state.prices[inputEl.dataset.price]);
+  $$('[data-price]').forEach(inputEl => {
+    const value = state.prices[inputEl.dataset.price];
+    inputEl.value = GASPY_PRICE_KEYS.has(inputEl.dataset.price) ? Number(value).toFixed(2) : value;
+  });
 }
 
 function setFuelStatus(label, detail, stateName = '') {
@@ -202,10 +205,10 @@ async function fetchGaspyPrices(force = false) {
     const payload = await response.json();
     const averages = payload?.datamine?.Averages;
     const fuelPrices = {
-      petrol91: Math.round(Number(averages?.['91']?.Average) * 10) / 1000,
-      petrol95: Math.round(Number(averages?.['95']?.Average) * 10) / 1000,
-      petrol98: Math.round(Number(averages?.['98']?.Average) * 10) / 1000,
-      diesel: Math.round(Number(averages?.Diesel?.Average) * 10) / 1000,
+      petrol91: Math.round(Number(averages?.['91']?.Average)) / 100,
+      petrol95: Math.round(Number(averages?.['95']?.Average)) / 100,
+      petrol98: Math.round(Number(averages?.['98']?.Average)) / 100,
+      diesel: Math.round(Number(averages?.Diesel?.Average)) / 100,
     };
     if (Object.values(fuelPrices).some(value => !Number.isFinite(value) || value <= 0)) {
       throw new Error('Gaspy averages were incomplete');
@@ -241,6 +244,14 @@ function bindGlobalInputs() {
       state.fuelSource = 'manual';
       setFuelStatus('Manual override', 'Saved manual fuel prices', 'manual');
     }
+    saveState();
+    renderVehicles();
+  }));
+  $$('[data-price]').forEach(inputEl => inputEl.addEventListener('change', event => {
+    const key = event.target.dataset.price;
+    if (!GASPY_PRICE_KEYS.has(key)) return;
+    state.prices[key] = Math.round(Number(event.target.value) * 100) / 100;
+    event.target.value = state.prices[key].toFixed(2);
     saveState();
     renderVehicles();
   }));
