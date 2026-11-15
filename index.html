@@ -48,12 +48,16 @@
             <span>Trip distance</span>
             <span class="input-with-unit"><input id="trip-km" type="number" min="0" step="10" value="220"><b>km</b></span>
           </label>
-          <label class="field trip-home-field">
+          <label class="field">
             <span>Home-charged EV range</span>
             <span class="input-with-unit"><input id="trip-home-km" type="number" min="0" step="10" value="350" aria-describedby="trip-home-help"><b>km</b></span>
           </label>
+          <label class="field">
+            <span>EV charging at home</span>
+            <span class="input-with-unit"><input id="home-share" type="number" min="0" max="100" step="5" value="80" aria-describedby="trip-home-help"><b>%</b></span>
+          </label>
         </div>
-        <p class="field-help" id="trip-home-help">For EV trips, this distance uses your home electricity rate. Any remaining distance uses public charging.</p>
+        <p class="field-help" id="trip-home-help">Annual EV costs use the home-charging percentage. Trip costs use the home-charged range first, then public charging.</p>
       </article>
 
       <article class="panel prices-panel">
@@ -95,9 +99,8 @@
       </article>
 
       <details class="panel advanced-panel">
-        <summary><span><span class="step">03</span><b>Charging and RUC assumptions</b></span><span class="summary-action">Adjust</span></summary>
+        <summary><span><span class="step">03</span><b>Efficiency and RUC assumptions</b></span><span class="summary-action">Adjust</span></summary>
         <div class="advanced-grid">
-          <label class="field"><span>EV charging at home</span><span class="input-with-unit"><input id="home-share" type="number" min="0" max="100" step="5" value="80"><b>%</b></span></label>
           <label class="field"><span>Charging efficiency</span><span class="input-with-unit"><input id="charge-efficiency" type="number" min="1" max="100" step="1" value="95"><b>%</b></span></label>
           <label class="field"><span>Diesel &amp; EV RUC</span><span class="input-with-unit"><b>$</b><input id="standard-ruc" type="number" min="0" step="1" value="76"><b>/1,000 km</b></span></label>
           <label class="field"><span>Petrol PHEV RUC</span><span class="input-with-unit"><b>$</b><input id="phev-ruc" type="number" min="0" step="1" value="38"><b>/1,000 km</b></span></label>

@@ -41,7 +41,6 @@ h1 { max-width: 760px; margin: 0; font-family: Georgia, "Times New Roman", serif
 .section-heading .step { margin-bottom: 8px; }
 .text-button { border: 0; padding: 4px 0; color: var(--muted); background: transparent; cursor: pointer; font-size: .76rem; text-decoration: underline; text-underline-offset: 4px; }
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 26px; }
-.trip-home-field { grid-column: 1 / -1; }
 .field-help { margin: 10px 0 0; color: var(--muted); font-size: .68rem; line-height: 1.45; }
 .field, .vehicle-field { display: grid; gap: 8px; color: var(--muted); font-size: .76rem; font-weight: 680; }
 .input-with-unit { min-height: 48px; padding: 0 14px; display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 11px; color: var(--ink); background: #fff; }
@@ -75,7 +74,7 @@ input::-webkit-inner-spin-button { appearance: none; }
 .advanced-panel summary > span:first-child { display: flex; align-items: center; gap: 16px; }
 .advanced-panel summary .step { margin: 0; }
 .summary-action { color: var(--green); font-size: .76rem; font-weight: 750; }
-.advanced-grid { padding: 0 28px 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.advanced-grid { padding: 0 28px 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 .advanced-panel .panel-note { padding: 0 28px 20px; margin: 0; }
 
 .comparison-section { padding: 58px 0 32px; }
@@ -138,7 +137,7 @@ footer a { text-underline-offset: 3px; }
   .hero { padding: 28px 34px; }
   .control-grid { grid-template-columns: 1fr; }
   .advanced-panel { grid-column: auto; }
-  .advanced-grid { grid-template-columns: 1fr 1fr; }
+  .advanced-grid { grid-template-columns: repeat(3, 1fr); }
   .vehicle-grid, .results-summary { grid-template-columns: 1fr 1fr; }
 }
 
