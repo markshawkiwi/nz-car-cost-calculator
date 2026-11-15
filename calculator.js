@@ -5,6 +5,8 @@ export const DEFAULTS = {
   chargeEfficiency: 95,
   standardRuc: 76,
   phevRuc: 38,
+  fuelSource: 'gaspy',
+  gaspyUpdated: '',
   prices: { petrol91: 2.8, petrol95: 3.0, petrol98: 3.1, diesel: 2.0, homeElectric: 0.3, publicElectric: 0.82 },
   vehicles: [
     { id: 'petrol-example', name: 'Petrol hatch', type: 'petrol', consumption: 7.2, grade: 'petrol91' },

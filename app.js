@@ -1,6 +1,8 @@
 import { DEFAULTS, calculateVehicle, rankVehicles } from './calculator.js';
 
 const STORAGE_KEY = 'roadwise-calculator-v1';
+const GASPY_ENDPOINT = 'https://gaspy-datamine-stats.firebaseio.com/.json';
+const GASPY_PRICE_KEYS = new Set(['petrol91', 'petrol95', 'petrol98', 'diesel']);
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const money = new Intl.NumberFormat('en-NZ', { style: 'currency', currency: 'NZD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
@@ -177,6 +179,50 @@ function syncInputs() {
   $$('[data-price]').forEach(inputEl => inputEl.value = state.prices[inputEl.dataset.price]);
 }
 
+function setFuelStatus(label, detail, stateName = '') {
+  const status = $('#fuel-status');
+  status.textContent = label;
+  status.dataset.state = stateName;
+  $('#fuel-source-detail').textContent = detail;
+}
+
+async function fetchGaspyPrices(force = false) {
+  if (state.fuelSource === 'manual' && !force) {
+    setFuelStatus('Manual override', 'Saved manual fuel prices', 'manual');
+    return;
+  }
+
+  setFuelStatus('Loading Gaspy', 'Connecting to Gaspy…', 'loading');
+  $('#refresh-gaspy').disabled = true;
+  try {
+    const response = await fetch(GASPY_ENDPOINT, { cache: 'no-store' });
+    if (!response.ok) throw new Error(`Gaspy returned ${response.status}`);
+    const payload = await response.json();
+    const averages = payload?.datamine?.Averages;
+    const fuelPrices = {
+      petrol91: Math.round(Number(averages?.['91']?.Average) * 10) / 1000,
+      petrol95: Math.round(Number(averages?.['95']?.Average) * 10) / 1000,
+      petrol98: Math.round(Number(averages?.['98']?.Average) * 10) / 1000,
+      diesel: Math.round(Number(averages?.Diesel?.Average) * 10) / 1000,
+    };
+    if (Object.values(fuelPrices).some(value => !Number.isFinite(value) || value <= 0)) {
+      throw new Error('Gaspy averages were incomplete');
+    }
+    Object.assign(state.prices, fuelPrices);
+    state.fuelSource = 'gaspy';
+    state.gaspyUpdated = payload?.datamine?.Updated || '';
+    saveState();
+    syncInputs();
+    renderVehicles();
+    setFuelStatus('Gaspy NZ average', state.gaspyUpdated ? `Gaspy updated ${state.gaspyUpdated}` : 'Latest Gaspy NZ averages', 'gaspy');
+  } catch (error) {
+    console.warn('Could not update Gaspy prices:', error);
+    setFuelStatus('Saved prices', 'Gaspy unavailable — using saved prices', 'error');
+  } finally {
+    $('#refresh-gaspy').disabled = false;
+  }
+}
+
 function bindGlobalInputs() {
   const inputs = [
     ['#annual-km', 'annualKm'], ['#trip-km', 'tripKm'], ['#home-share', 'homeShare'],
@@ -189,9 +235,14 @@ function bindGlobalInputs() {
   }));
   $$('[data-price]').forEach(inputEl => inputEl.addEventListener('input', event => {
     state.prices[event.target.dataset.price] = Number(event.target.value);
+    if (GASPY_PRICE_KEYS.has(event.target.dataset.price)) {
+      state.fuelSource = 'manual';
+      setFuelStatus('Manual override', 'Saved manual fuel prices', 'manual');
+    }
     saveState();
     renderVehicles();
   }));
+  $('#refresh-gaspy').addEventListener('click', () => fetchGaspyPrices(true));
   $('#add-vehicle').addEventListener('click', () => {
     state.vehicles.push({ id: id(), name: 'My car', type: 'petrol', consumption: 7, grade: 'petrol91' });
     saveState();
@@ -204,9 +255,11 @@ function bindGlobalInputs() {
     saveState();
     syncInputs();
     renderVehicles();
+    fetchGaspyPrices();
   });
 }
 
 syncInputs();
 bindGlobalInputs();
 renderVehicles();
+fetchGaspyPrices();

@@ -11,8 +11,8 @@
 <body>
   <header class="site-header">
     <a class="brand" href="#top" aria-label="NZ Car Cost Calculator home">
-      <span class="brand-mark" aria-hidden="true">↗</span>
-      <span>Roadwise</span>
+      <span class="brand-mark" aria-hidden="true">NZ</span>
+      <span>Car cost calculator</span>
     </a>
     <a class="header-link" href="https://www.gaspy.nz/stats.html" target="_blank" rel="noreferrer">View Gaspy prices <span aria-hidden="true">↗</span></a>
   </header>
@@ -20,12 +20,12 @@
   <main id="top">
     <section class="hero">
       <div>
-        <p class="eyebrow">New Zealand car running costs</p>
-        <h1>See what each car really costs to drive.</h1>
-        <p class="hero-copy">Compare fuel, electricity and road user charges using your own driving and prices.</p>
+        <p class="eyebrow">Running-cost comparison</p>
+        <h1>Compare car running costs.</h1>
+        <p class="hero-copy">Fuel, electricity and road user charge estimates for New Zealand vehicles.</p>
       </div>
       <div class="hero-metric" aria-live="polite">
-        <span>Best annual estimate</span>
+        <span>Lowest annual cost</span>
         <strong id="best-annual">—</strong>
         <small id="best-label">Add a vehicle to compare</small>
       </div>
@@ -58,20 +58,20 @@
             <p class="step">02</p>
             <h2>Energy prices</h2>
           </div>
-          <span class="status-badge">Manual prices</span>
+          <span class="status-badge" id="fuel-status">Loading Gaspy</span>
         </div>
-        <p class="panel-note">Enter the price you actually pay. Automatic Gaspy averages are planned once supported access is confirmed.</p>
+        <p class="panel-note">NZ average fuel prices load from Gaspy. Edit any price to use a manual override.</p>
         <div class="price-grid">
-          <label class="mini-field"><span>Petrol 91</span><span><b>$</b><input data-price="petrol91" type="number" min="0" step="0.01" value="2.80"></span></label>
-          <label class="mini-field"><span>Petrol 95</span><span><b>$</b><input data-price="petrol95" type="number" min="0" step="0.01" value="3.00"></span></label>
-          <label class="mini-field"><span>Petrol 98</span><span><b>$</b><input data-price="petrol98" type="number" min="0" step="0.01" value="3.10"></span></label>
-          <label class="mini-field"><span>Diesel</span><span><b>$</b><input data-price="diesel" type="number" min="0" step="0.01" value="2.00"></span></label>
+          <label class="mini-field"><span>Petrol 91</span><span><b>$</b><input data-price="petrol91" type="number" min="0" step="0.001" value="2.80"></span></label>
+          <label class="mini-field"><span>Petrol 95</span><span><b>$</b><input data-price="petrol95" type="number" min="0" step="0.001" value="3.00"></span></label>
+          <label class="mini-field"><span>Petrol 98</span><span><b>$</b><input data-price="petrol98" type="number" min="0" step="0.001" value="3.10"></span></label>
+          <label class="mini-field"><span>Diesel</span><span><b>$</b><input data-price="diesel" type="number" min="0" step="0.001" value="2.00"></span></label>
           <label class="mini-field"><span>Home power</span><span><b>$</b><input data-price="homeElectric" type="number" min="0" step="0.01" value="0.30"></span></label>
           <label class="mini-field"><span>Public charging</span><span><b>$</b><input data-price="publicElectric" type="number" min="0" step="0.01" value="0.82"></span></label>
         </div>
         <div class="source-row">
-          <span>Fuel prices are examples until edited</span>
-          <a href="https://www.gaspy.nz/stats.html" target="_blank" rel="noreferrer">Check Gaspy</a>
+          <span id="fuel-source-detail">Connecting to Gaspy…</span>
+          <button class="source-button" id="refresh-gaspy" type="button">Refresh from Gaspy</button>
         </div>
       </article>
 
@@ -92,7 +92,7 @@
         <div>
           <p class="step">04</p>
           <h2>Compare vehicles</h2>
-          <p>Edit the examples or add your own car. Results update instantly.</p>
+          <p>Edit the examples or add your own car.</p>
         </div>
         <button class="primary-button" id="add-vehicle" type="button"><span aria-hidden="true">＋</span> Add vehicle</button>
       </div>
@@ -103,8 +103,8 @@
 
     <section class="method-section">
       <div>
-        <p class="eyebrow">How the estimate works</p>
-        <h2>A fair comparison, with the important costs visible.</h2>
+        <p class="eyebrow">Calculation method</p>
+        <h2>What is included</h2>
       </div>
       <div class="method-list">
         <p><span>Fuel</span>Consumption × pump price</p>
@@ -150,7 +150,7 @@
   </template>
 
   <footer>
-    <p>Roadwise is a personal NZ running-cost calculator.</p>
+    <p>NZ car running-cost calculator.</p>
     <p><a href="https://www.nzta.govt.nz/vehicles/road-user-charges/about-ruc" target="_blank" rel="noreferrer">NZTA RUC information</a> · <a href="https://www.gaspy.nz/stats.html" target="_blank" rel="noreferrer">Gaspy fuel statistics</a></p>
   </footer>
 
