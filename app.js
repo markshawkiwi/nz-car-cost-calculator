@@ -9,6 +9,7 @@ const money = new Intl.NumberFormat('en-NZ', { style: 'currency', currency: 'NZD
 const money2 = new Intl.NumberFormat('en-NZ', { style: 'currency', currency: 'NZD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 let state = loadState();
+let vehicleCatalogue = [];
 
 function cloneDefaults() {
   return JSON.parse(JSON.stringify(DEFAULTS));
@@ -139,7 +140,8 @@ function updateVehicleCard(card, vehicle) {
   $('.per-100', card).textContent = money2.format(result.totalPer100);
   $('.annual-cost', card).textContent = money.format(result.annualCost);
   $('.trip-cost', card).textContent = money2.format(result.tripCost);
-  $('.vehicle-footnote', card).textContent = `${result.detail} · ${typeLabel(vehicle.type)}${result.tripDetail ? ` · Trip: ${result.tripDetail}` : ''}`;
+  const source = vehicle.catalogueId ? ' · NZTA starting figure, editable' : '';
+  $('.vehicle-footnote', card).textContent = `${result.detail} · ${typeLabel(vehicle.type)}${source}${result.tripDetail ? ` · Trip: ${result.tripDetail}` : ''}`;
   const denominator = result.totalPer100 || 1;
   $('.energy-bar', card).style.width = `${result.energyPer100 / denominator * 100}%`;
   $('.ruc-bar', card).style.width = `${result.rucPer100 / denominator * 100}%`;
@@ -189,6 +191,91 @@ function setFuelStatus(label, detail, stateName = '') {
   status.textContent = label;
   status.dataset.state = stateName;
   $('#fuel-source-detail').textContent = detail;
+}
+
+function setSelectOptions(select, values, label, selected = '') {
+  const options = values.map(value => {
+    const option = typeof value === 'string' || typeof value === 'number' ? { value, label: value } : value;
+    return new Option(String(option.label), String(option.value));
+  });
+  select.replaceChildren(new Option(label, ''), ...options);
+  select.disabled = values.length === 0;
+  if (selected && values.some(value => String((value && value.value) ?? value) === String(selected))) select.value = selected;
+  if (!select.value && values.length) select.selectedIndex = 1;
+}
+
+function unique(values) {
+  return [...new Set(values)].sort((a, b) => String(a).localeCompare(String(b), 'en-NZ', { numeric: true }));
+}
+
+function updateCatalogueMakes() {
+  const year = Number($('#catalogue-year').value);
+  const records = vehicleCatalogue.filter(record => !year || record.year === year);
+  setSelectOptions($('#catalogue-make'), unique(records.map(record => record.make)), 'Select make');
+  updateCatalogueModels();
+}
+
+function updateCatalogueModels() {
+  const year = Number($('#catalogue-year').value);
+  const make = $('#catalogue-make').value;
+  const records = vehicleCatalogue.filter(record => (!year || record.year === year) && (!make || record.make === make));
+  setSelectOptions($('#catalogue-model'), unique(records.map(record => record.model)), 'Select model');
+  updateCatalogueVariants();
+}
+
+function updateCatalogueVariants() {
+  const selectedId = $('#catalogue-variant').value;
+  const year = Number($('#catalogue-year').value);
+  const make = $('#catalogue-make').value;
+  const model = $('#catalogue-model').value;
+  const records = vehicleCatalogue
+    .filter(record => (!year || record.year === year) && (!make || record.make === make) && (!model || record.model === model))
+    .sort((a, b) => b.count - a.count || a.variant.localeCompare(b.variant));
+  const options = records.map(record => ({
+    value: record.id,
+    label: `${record.variant} · ${typeLabel(record.type)} · ${record.consumption.toFixed(1)} L/100 km`,
+  }));
+  setSelectOptions($('#catalogue-variant'), options, 'Select variant', selectedId);
+  updateCatalogueStatus();
+}
+
+function updateCatalogueStatus() {
+  $('#add-catalogue-vehicle').disabled = !$('#catalogue-variant').value;
+  const selected = vehicleCatalogue.find(record => record.id === $('#catalogue-variant').value);
+  $('#catalogue-status').textContent = selected
+    ? `Recorded combined consumption: ${selected.consumption.toFixed(1)} L/100 km · ${selected.count.toLocaleString('en-NZ')} matching NZ vehicles`
+    : 'Choose a vehicle to see its recorded combined consumption.';
+}
+
+async function loadVehicleCatalogue() {
+  try {
+    const response = await fetch('./data/vehicles.json');
+    if (!response.ok) throw new Error(`Vehicle catalogue returned ${response.status}`);
+    const payload = await response.json();
+    vehicleCatalogue = payload.records || [];
+    const years = unique(vehicleCatalogue.map(record => record.year)).sort((a, b) => b - a);
+    setSelectOptions($('#catalogue-year'), years, 'Select year');
+    updateCatalogueMakes();
+  } catch (error) {
+    console.warn('Could not load vehicle catalogue:', error);
+    $('#catalogue-status').textContent = 'The NZTA vehicle catalogue is unavailable. Add a custom vehicle instead.';
+  }
+}
+
+function addCatalogueVehicle() {
+  const record = vehicleCatalogue.find(item => item.id === $('#catalogue-variant').value);
+  if (!record) return;
+  state.vehicles.push({
+    id: id(),
+    name: `${record.year} ${record.make} ${record.model}`,
+    type: record.type,
+    consumption: record.consumption,
+    grade: 'petrol91',
+    catalogueId: record.id,
+  });
+  saveState();
+  renderVehicles();
+  $$('.vehicle-card').at(-1)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 async function fetchGaspyPrices(force = false) {
@@ -256,6 +343,11 @@ function bindGlobalInputs() {
     renderVehicles();
   }));
   $('#refresh-gaspy').addEventListener('click', () => fetchGaspyPrices(true));
+  $('#catalogue-year').addEventListener('change', updateCatalogueMakes);
+  $('#catalogue-make').addEventListener('change', updateCatalogueModels);
+  $('#catalogue-model').addEventListener('change', updateCatalogueVariants);
+  $('#catalogue-variant').addEventListener('change', updateCatalogueStatus);
+  $('#add-catalogue-vehicle').addEventListener('click', addCatalogueVehicle);
   $('#add-vehicle').addEventListener('click', () => {
     state.vehicles.push({ id: id(), name: 'My car', type: 'petrol', consumption: 7, grade: 'petrol91' });
     saveState();
@@ -276,3 +368,4 @@ syncInputs();
 bindGlobalInputs();
 renderVehicles();
 fetchGaspyPrices();
+loadVehicleCatalogue();

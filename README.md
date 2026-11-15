@@ -4,7 +4,7 @@ A planned mobile-friendly running-cost calculator for personal use and sharing w
 
 ## Project status
 
-The first web interface is built. It supports editable vehicle comparisons, local saving, a transparent cost breakdown and automatic NZ-average fuel prices from Gaspy.
+The web interface supports editable vehicle comparisons, make/model selection from NZTA open data, local saving, a transparent cost breakdown and automatic NZ-average fuel prices from Gaspy.
 
 ## First version
 
@@ -15,6 +15,13 @@ The first web interface is built. It supports editable vehicle comparisons, loca
 - Preserve the original spreadsheet's home/public charging split and charging efficiency inputs.
 - Allow manual prices and consumption overrides.
 - Save comparisons on each person's device.
+- Choose common NZ-registered petrol, diesel and hybrid vehicles by year, make, model and variant.
+
+## Vehicle catalogue
+
+`data/vehicles.json` contains a compact catalogue generated from the [NZTA Motor Vehicle Register open data](https://www.nzta.govt.nz/resources/new-zealand-motor-vehicle-register-statistics/new-zealand-vehicle-fleet-open-data-sets/). It includes the 240 most common recorded passenger-vehicle variants for each model year from 2000 onward and uses the recorded `FC_COMBINED` value as an editable starting point.
+
+Run `python3 scripts/build_vehicle_catalog.py` to refresh it. The `Update NZTA vehicle catalogue` GitHub Action runs monthly and commits any changed catalogue. EVs and plug-in hybrids remain custom entries because this source does not provide the separate energy inputs needed by the calculator for those powertrains.
 
 ## Run locally
 
@@ -38,7 +45,7 @@ The original workbook is the reference for the existing calculations. Its stored
 
 ## Later ideas
 
-Verified vehicle presets, shareable comparison links, and an optional ownership-cost view covering servicing, tyres, insurance, depreciation and purchase-price differences.
+EV presets from a suitable kWh/100 km source, shareable comparison links, and an optional ownership-cost view covering servicing, tyres, insurance, depreciation and purchase-price differences.
 
 ## Repository and hosting
 

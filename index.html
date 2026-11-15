@@ -114,12 +114,29 @@
         <div>
           <p class="step">04</p>
           <h2>Compare vehicles</h2>
-          <p>Edit the examples or add your own car.</p>
+          <p>Choose an NZ vehicle or add your own car.</p>
         </div>
-        <button class="primary-button" id="add-vehicle" type="button"><span aria-hidden="true">＋</span> Add vehicle</button>
+        <button class="primary-button secondary-action" id="add-vehicle" type="button"><span aria-hidden="true">＋</span> Add custom vehicle</button>
       </div>
 
       <p class="scope-note"><strong>Maintenance is not included.</strong> This estimate covers fuel or electricity and RUC only.</p>
+      <div class="vehicle-finder" aria-labelledby="vehicle-finder-title">
+        <div class="finder-intro">
+          <div>
+            <strong id="vehicle-finder-title">Choose a make and model</strong>
+            <small>Uses NZTA combined fuel-consumption records. You can edit the figure after adding the vehicle.</small>
+          </div>
+          <a href="https://www.nzta.govt.nz/resources/new-zealand-motor-vehicle-register-statistics/new-zealand-vehicle-fleet-open-data-sets/" target="_blank" rel="noreferrer">NZTA source ↗</a>
+        </div>
+        <div class="finder-fields">
+          <label><span>Year</span><select id="catalogue-year" disabled><option>Loading…</option></select></label>
+          <label><span>Make</span><select id="catalogue-make" disabled><option>—</option></select></label>
+          <label><span>Model</span><select id="catalogue-model" disabled><option>—</option></select></label>
+          <label class="variant-field"><span>Variant</span><select id="catalogue-variant" disabled><option>—</option></select></label>
+          <button class="primary-button" id="add-catalogue-vehicle" type="button" disabled>Add to comparison</button>
+        </div>
+        <p class="catalogue-status" id="catalogue-status" role="status">Loading the NZ vehicle catalogue…</p>
+      </div>
       <div class="results-summary" id="results-summary" aria-live="polite"></div>
       <div class="vehicle-grid" id="vehicle-grid"></div>
     </section>
@@ -174,7 +191,7 @@
   </template>
 
   <footer>
-    <p><a href="https://www.nzta.govt.nz/vehicles/road-user-charges/about-ruc" target="_blank" rel="noreferrer">NZTA RUC information</a> · <a href="https://www.gaspy.nz/stats.html" target="_blank" rel="noreferrer">Gaspy fuel statistics</a></p>
+    <p><a href="https://www.nzta.govt.nz/vehicles/road-user-charges/about-ruc" target="_blank" rel="noreferrer">NZTA RUC information</a> · <a href="https://www.nzta.govt.nz/resources/new-zealand-motor-vehicle-register-statistics/new-zealand-vehicle-fleet-open-data-sets/" target="_blank" rel="noreferrer">NZTA vehicle data</a> · <a href="https://www.gaspy.nz/stats.html" target="_blank" rel="noreferrer">Gaspy fuel statistics</a></p>
   </footer>
 
   <script type="module" src="app.js"></script>
