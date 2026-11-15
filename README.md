@@ -4,7 +4,7 @@ A planned mobile-friendly running-cost calculator for personal use and sharing w
 
 ## Project status
 
-The first web interface is built. It supports editable vehicle comparisons, local saving and a transparent cost breakdown. Automatic Gaspy prices still require a supported data feed.
+The first web interface is built. It supports editable vehicle comparisons, local saving, a transparent cost breakdown and automatic NZ-average fuel prices from Gaspy.
 
 ## First version
 
@@ -22,9 +22,9 @@ Use a local static server from this folder, or run `npm run build` and serve the
 
 ## Fuel prices
 
-The intended source is [Gaspy's NZ statistics](https://www.gaspy.nz/stats.html). A supported automatic feed and its access terms remain to be confirmed. [Datamine](https://www.datamine.com/data/fuel-price-nz) is Gaspy's official data agent.
+Fuel prices come from the public dataset used by [Gaspy's NZ statistics](https://www.gaspy.nz/stats.html). The calculator loads national averages for 91, 95, 98 and diesel, displays Gaspy's update time and retains the last saved prices if an update fails.
 
-Automatic prices should display their source and update date. Manual overrides must survive refreshes until explicitly reset. Failed updates must retain the last known values with their date, rather than replacing them with zero. Electricity rates are separately editable.
+Editing a fuel price activates a saved manual override. `Refresh from Gaspy` replaces the four pump prices with current national averages. Electricity rates remain separately editable.
 
 ## Calculation requirements
 
