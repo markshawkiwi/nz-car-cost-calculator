@@ -72,6 +72,8 @@ input::-webkit-inner-spin-button { appearance: none; }
 .comparison-section { padding: 86px 0 40px; }
 .comparison-heading { align-items: end; margin-bottom: 28px; }
 .comparison-heading p:not(.step) { margin: 9px 0 0; color: var(--muted); font-size: .86rem; }
+.scope-note { margin: 0 0 18px; padding: 11px 14px; border: 1px solid #d7d9cf; border-radius: 10px; color: var(--muted); background: rgba(255,255,255,.55); font-size: .75rem; }
+.scope-note strong { color: var(--ink); }
 .primary-button { padding: 12px 17px; border: 0; border-radius: 10px; color: #fff; background: var(--green-dark); cursor: pointer; font-weight: 720; box-shadow: 0 7px 16px rgba(19,62,49,.17); }
 .primary-button:hover { background: var(--green); }
 .results-summary { margin-bottom: 18px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
