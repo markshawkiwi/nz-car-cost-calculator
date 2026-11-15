@@ -23,6 +23,11 @@ const petrol = calculateVehicle({ type: 'petrol', consumption: 8, grade: 'petrol
 assert.equal(petrol.totalPer100, 26.4);
 assert.equal(petrol.tripCost, 58.08);
 
+const adjustedPetrol = calculateVehicle({ type: 'petrol', consumption: 8, realWorldAdjustment: 15, grade: 'petrol91' }, assumptions);
+assert.ok(Math.abs(adjustedPetrol.adjustedConsumption - 9.2) < 1e-9);
+assert.ok(Math.abs(adjustedPetrol.totalPer100 - 30.36) < 1e-9);
+assert.match(adjustedPetrol.detail, /\+15% real-world adjustment/);
+
 const ev = calculateVehicle({ type: 'ev', consumption: 15 }, assumptions);
 assert.ok(Math.abs(ev.energyPer100 - 5.115789473684211) < 1e-9);
 assert.ok(Math.abs(ev.annualCost - 1271.578947368421) < 1e-9);

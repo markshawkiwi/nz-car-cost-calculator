@@ -16,10 +16,11 @@ The web interface supports editable vehicle comparisons, make/model selection fr
 - Allow manual prices and consumption overrides.
 - Save comparisons on each person's device.
 - Choose common NZ-registered petrol, diesel and hybrid vehicles by year, make, model and variant.
+- Apply a per-vehicle real-world percentage adjustment to an NZTA factory consumption figure.
 
 ## Vehicle catalogue
 
-`data/vehicles.json` contains a compact catalogue generated from the [NZTA Motor Vehicle Register open data](https://www.nzta.govt.nz/resources/new-zealand-motor-vehicle-register-statistics/new-zealand-vehicle-fleet-open-data-sets/). It includes the 240 most common recorded passenger-vehicle variants for each model year from 2000 onward and uses the recorded `FC_COMBINED` value as an editable starting point.
+`data/vehicles.json` contains a compact catalogue generated from the [NZTA Motor Vehicle Register open data](https://www.nzta.govt.nz/resources/new-zealand-motor-vehicle-register-statistics/new-zealand-vehicle-fleet-open-data-sets/). It includes the 240 most common recorded passenger-vehicle variants for each model year from 2000 onward and uses the recorded `FC_COMBINED` value as an editable starting point. Catalogue vehicles also have an optional percentage adjustment that is applied to the recorded consumption before costs are calculated.
 
 Run `python3 scripts/build_vehicle_catalog.py` to refresh it. The `Update NZTA vehicle catalogue` GitHub Action runs monthly and commits any changed catalogue. EVs and plug-in hybrids remain custom entries because this source does not provide the separate energy inputs needed by the calculator for those powertrains.
 

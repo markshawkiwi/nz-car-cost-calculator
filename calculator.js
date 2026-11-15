@@ -26,6 +26,8 @@ export function blendedElectricityPrice(prices, homeShare) {
 
 export function calculateVehicle(vehicle, assumptions) {
   const consumption = finite(vehicle.consumption);
+  const adjustment = Math.max(-50, Math.min(100, Number.isFinite(Number(vehicle.realWorldAdjustment)) ? Number(vehicle.realWorldAdjustment) : 0));
+  const adjustedConsumption = consumption * (1 + adjustment / 100);
   const annualKm = finite(assumptions.annualKm);
   const tripKm = finite(assumptions.tripKm);
   const tripHomeKm = finite(assumptions.tripHomeKm, 350);
@@ -38,12 +40,12 @@ export function calculateVehicle(vehicle, assumptions) {
 
   if (vehicle.type === 'petrol' || vehicle.type === 'hybrid') {
     const grade = vehicle.grade || 'petrol91';
-    energyPer100 = consumption * finite(assumptions.prices[grade]);
-    detail = `${consumption.toFixed(1)} L/100 km`;
+    energyPer100 = adjustedConsumption * finite(assumptions.prices[grade]);
+    detail = `${adjustedConsumption.toFixed(1)} L/100 km${adjustment ? ` (${adjustment > 0 ? '+' : ''}${adjustment}% real-world adjustment)` : ''}`;
   } else if (vehicle.type === 'diesel') {
-    energyPer100 = consumption * finite(assumptions.prices.diesel);
+    energyPer100 = adjustedConsumption * finite(assumptions.prices.diesel);
     rucPer100 = finite(assumptions.standardRuc) / 10;
-    detail = `${consumption.toFixed(1)} L/100 km`;
+    detail = `${adjustedConsumption.toFixed(1)} L/100 km${adjustment ? ` (${adjustment > 0 ? '+' : ''}${adjustment}% real-world adjustment)` : ''}`;
   } else if (vehicle.type === 'ev') {
     energyPer100 = consumption * electricPrice / efficiency;
     rucPer100 = finite(assumptions.standardRuc) / 10;
@@ -82,6 +84,7 @@ export function calculateVehicle(vehicle, assumptions) {
     tripCost,
     detail,
     tripDetail,
+    adjustedConsumption,
   };
 }
 

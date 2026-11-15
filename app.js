@@ -67,7 +67,9 @@ function vehicleInputs(vehicle) {
   const unit = vehicle.type === 'ev' ? 'kWh/100 km' : 'L/100 km';
   const grade = (vehicle.type === 'petrol' || vehicle.type === 'hybrid')
     ? `<label class="vehicle-field"><span>Fuel grade</span><select class="fuel-grade"><option value="petrol91">91</option><option value="petrol95">95</option><option value="petrol98">98</option></select></label>` : '';
-  return `${input('Consumption', 'consumption', vehicle.consumption ?? (vehicle.type === 'ev' ? 16 : 7), unit)}${grade}`;
+  const adjustment = vehicle.catalogueId && ['petrol', 'hybrid', 'diesel'].includes(vehicle.type)
+    ? input('Real-world adjustment', 'real-world-adjustment', vehicle.realWorldAdjustment ?? 0, '%', -50, 100) : '';
+  return `${input('Consumption', 'consumption', vehicle.consumption ?? (vehicle.type === 'ev' ? 16 : 7), unit)}${grade}${adjustment}`;
 }
 
 function renderVehicle(vehicle, index) {
@@ -96,6 +98,8 @@ function bindVehicle(card, vehicle) {
       petrolConsumption: 5.5,
       electricConsumption: 18,
       electricShare: 70,
+      realWorldAdjustment: 0,
+      catalogueId: null,
     }, true);
   });
   $('.remove-vehicle', card).addEventListener('click', () => {
@@ -111,11 +115,13 @@ function bindVehicle(card, vehicle) {
     const electric = $('.electric-consumption', card);
     const share = $('.electric-share', card);
     const grade = $('.fuel-grade', card);
+    const adjustment = $('.real-world-adjustment', card);
     if (consumption) change.consumption = Number(consumption.value);
     if (petrol) change.petrolConsumption = Number(petrol.value);
     if (electric) change.electricConsumption = Number(electric.value);
     if (share) change.electricShare = Number(share.value);
     if (grade) change.grade = grade.value;
+    if (adjustment) change.realWorldAdjustment = Number(adjustment.value);
     updateVehicle(vehicle.id, change);
   }));
 }
@@ -140,7 +146,7 @@ function updateVehicleCard(card, vehicle) {
   $('.per-100', card).textContent = money2.format(result.totalPer100);
   $('.annual-cost', card).textContent = money.format(result.annualCost);
   $('.trip-cost', card).textContent = money2.format(result.tripCost);
-  const source = vehicle.catalogueId ? ' · NZTA starting figure, editable' : '';
+  const source = vehicle.catalogueId ? ' · NZTA factory figure, editable' : '';
   $('.vehicle-footnote', card).textContent = `${result.detail} · ${typeLabel(vehicle.type)}${source}${result.tripDetail ? ` · Trip: ${result.tripDetail}` : ''}`;
   const denominator = result.totalPer100 || 1;
   $('.energy-bar', card).style.width = `${result.energyPer100 / denominator * 100}%`;
@@ -272,6 +278,7 @@ function addCatalogueVehicle() {
     consumption: record.consumption,
     grade: 'petrol91',
     catalogueId: record.id,
+    realWorldAdjustment: 0,
   });
   saveState();
   renderVehicles();
