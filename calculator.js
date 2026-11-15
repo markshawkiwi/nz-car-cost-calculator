@@ -1,6 +1,7 @@
 export const DEFAULTS = {
   annualKm: 15000,
   tripKm: 220,
+  tripHomeKm: 350,
   homeShare: 80,
   chargeEfficiency: 95,
   standardRuc: 76,
@@ -27,11 +28,13 @@ export function calculateVehicle(vehicle, assumptions) {
   const consumption = finite(vehicle.consumption);
   const annualKm = finite(assumptions.annualKm);
   const tripKm = finite(assumptions.tripKm);
+  const tripHomeKm = finite(assumptions.tripHomeKm, 350);
   const efficiency = Math.max(0.01, Math.min(100, finite(assumptions.chargeEfficiency, 95)) / 100);
   const electricPrice = blendedElectricityPrice(assumptions.prices, assumptions.homeShare);
   let energyPer100 = 0;
   let rucPer100 = 0;
   let detail = '';
+  let tripDetail = '';
 
   if (vehicle.type === 'petrol' || vehicle.type === 'hybrid') {
     const grade = vehicle.grade || 'petrol91';
@@ -55,14 +58,30 @@ export function calculateVehicle(vehicle, assumptions) {
   }
 
   const totalPer100 = energyPer100 + rucPer100;
+  let tripCost = totalPer100 * tripKm / 100;
+  if (vehicle.type === 'ev') {
+    const homeKm = Math.min(tripKm, tripHomeKm);
+    const publicKm = Math.max(0, tripKm - homeKm);
+    const energyUsedPerKm = consumption / 100 / efficiency;
+    const tripEnergyCost = energyUsedPerKm * (
+      homeKm * finite(assumptions.prices.homeElectric)
+      + publicKm * finite(assumptions.prices.publicElectric)
+    );
+    const tripRucCost = rucPer100 * tripKm / 100;
+    tripCost = tripEnergyCost + tripRucCost;
+    tripDetail = publicKm > 0
+      ? `${homeKm.toFixed(0)} km home + ${publicKm.toFixed(0)} km public`
+      : `${homeKm.toFixed(0)} km at home rate`;
+  }
   return {
     energyPer100,
     rucPer100,
     totalPer100,
     perKm: totalPer100 / 100,
     annualCost: totalPer100 * annualKm / 100,
-    tripCost: totalPer100 * tripKm / 100,
+    tripCost,
     detail,
+    tripDetail,
   };
 }
 

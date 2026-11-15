@@ -31,6 +31,7 @@ function assumptions() {
   return {
     annualKm: state.annualKm,
     tripKm: state.tripKm,
+    tripHomeKm: state.tripHomeKm,
     homeShare: state.homeShare,
     chargeEfficiency: state.chargeEfficiency,
     standardRuc: state.standardRuc,
@@ -138,7 +139,7 @@ function updateVehicleCard(card, vehicle) {
   $('.per-100', card).textContent = money2.format(result.totalPer100);
   $('.annual-cost', card).textContent = money.format(result.annualCost);
   $('.trip-cost', card).textContent = money2.format(result.tripCost);
-  $('.vehicle-footnote', card).textContent = `${result.detail} · ${typeLabel(vehicle.type)}`;
+  $('.vehicle-footnote', card).textContent = `${result.detail} · ${typeLabel(vehicle.type)}${result.tripDetail ? ` · Trip: ${result.tripDetail}` : ''}`;
   const denominator = result.totalPer100 || 1;
   $('.energy-bar', card).style.width = `${result.energyPer100 / denominator * 100}%`;
   $('.ruc-bar', card).style.width = `${result.rucPer100 / denominator * 100}%`;
@@ -172,6 +173,7 @@ function escapeHtml(value) {
 function syncInputs() {
   $('#annual-km').value = state.annualKm;
   $('#trip-km').value = state.tripKm;
+  $('#trip-home-km').value = state.tripHomeKm;
   $('#home-share').value = state.homeShare;
   $('#charge-efficiency').value = state.chargeEfficiency;
   $('#standard-ruc').value = state.standardRuc;
@@ -225,7 +227,7 @@ async function fetchGaspyPrices(force = false) {
 
 function bindGlobalInputs() {
   const inputs = [
-    ['#annual-km', 'annualKm'], ['#trip-km', 'tripKm'], ['#home-share', 'homeShare'],
+    ['#annual-km', 'annualKm'], ['#trip-km', 'tripKm'], ['#trip-home-km', 'tripHomeKm'], ['#home-share', 'homeShare'],
     ['#charge-efficiency', 'chargeEfficiency'], ['#standard-ruc', 'standardRuc'], ['#phev-ruc', 'phevRuc'],
   ];
   inputs.forEach(([selector, key]) => $(selector).addEventListener('input', event => {

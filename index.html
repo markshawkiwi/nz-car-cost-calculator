@@ -49,7 +49,12 @@
             <span>Trip distance</span>
             <span class="input-with-unit"><input id="trip-km" type="number" min="0" step="10" value="220"><b>km</b></span>
           </label>
+          <label class="field trip-home-field">
+            <span>Home-charged EV range</span>
+            <span class="input-with-unit"><input id="trip-home-km" type="number" min="0" step="10" value="350" aria-describedby="trip-home-help"><b>km</b></span>
+          </label>
         </div>
+        <p class="field-help" id="trip-home-help">For EV trips, this distance uses your home electricity rate. Any remaining distance uses public charging.</p>
       </article>
 
       <article class="panel prices-panel">
@@ -125,6 +130,7 @@
       <div class="method-list">
         <p><span>Fuel</span>Consumption × pump price</p>
         <p><span>Electricity</span>Consumption × blended charging price ÷ efficiency</p>
+        <p><span>EV trips</span>Home-charged range first, then public charging</p>
         <p><span>Road use</span>Applicable RUC rate × distance</p>
       </div>
       <p class="method-note">This is an estimate of energy and RUC costs. It excludes servicing, tyres, insurance, registration, finance and depreciation.</p>
